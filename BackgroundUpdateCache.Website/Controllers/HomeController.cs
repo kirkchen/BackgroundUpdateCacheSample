@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackgroundUpdateCache.Website.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +9,18 @@ namespace BackgroundUpdateCache.Website.Controllers
 {
     public class HomeController : Controller
     {
+        public ILongRunningService LongRunningService { get; set; }
+
+        public HomeController(ILongRunningService longRunningService)
+        {
+            this.LongRunningService = longRunningService;
+        }
+
         public ActionResult Index()
         {
-            return View();
+            var data = this.LongRunningService.GetData();
+
+            return View(data);
         }
 
         public ActionResult About()
@@ -25,6 +35,6 @@ namespace BackgroundUpdateCache.Website.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
-        }
+        }        
     }
 }
