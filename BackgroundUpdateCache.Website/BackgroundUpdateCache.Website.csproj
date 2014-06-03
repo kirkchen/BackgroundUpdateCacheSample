@@ -176,6 +176,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Inteceptors\CacheInteceptors.cs" />
+    <Compile Include="Inteceptors\RenewCacheAdapter.cs" />
     <Compile Include="Models\CacheDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ILongRunningService.cs" />

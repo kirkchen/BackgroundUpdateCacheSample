@@ -8,6 +8,8 @@ using System.Web;
 using BackgroundUpdateCache.Website.Extensions;
 using BackgroundUpdateCache.Website.Models;
 using Newtonsoft.Json;
+using HangFire;
+using BackgroundUpdateCache.Website.BackgrounJobs;
 
 namespace BackgroundUpdateCache.Website.Interceptors
 {
@@ -36,17 +38,36 @@ namespace BackgroundUpdateCache.Website.Interceptors
 
                 IDatabase cache = this.RedisConnection.GetDatabase();
 
-                //// Is cache over time
-                var result = cache.Get(key);
-                if (result != null)
+                //// 完全無資料時，直接產生
+                var result = cache.Get<CacheDto>(key);
+                if (result == null)
                 {
-                    invocation.ReturnValue = result;
+                    invocation.Proceed();
+                    
+                    var dataToCache = new CacheDto{
+                        Data = invocation.ReturnValue,
+                        UpdateTime = DateTime.Now
+                    };
+
+                    cache.Set(key, dataToCache, TimeSpan.FromHours(1));
+
                     return;
                 }
 
-                invocation.Proceed();                
+                //// 快取過期時，產生一個背景更新的工作
+                //// 因背景後續才執行，因此此處可以馬上回應
+                if (result.UpdateTime + TimeSpan.FromSeconds(expireTime) < DateTime.Now)
+                {
+                    BackgroundJob.Enqueue<RenewCacheAdapter>(
+                        i => i.RenewCache(key,
+                                          expireTime,
+                                          invocation.TargetType.FullName,
+                                          invocation.MethodInvocationTarget.Name,
+                                          JsonConvert.SerializeObject(invocation.Arguments)));
+                }
 
-                cache.Set(key, invocation.ReturnValue, TimeSpan.FromSeconds(expireTime));
+                //// 直接回傳舊資料
+                invocation.ReturnValue = result.Data;
             }
         }
     }

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BackgroundUpdateCache.Website.BackgrounJobs;
+using HangFire;
 
 namespace BackgroundUpdateCache.Website
 {
@@ -24,8 +26,15 @@ namespace BackgroundUpdateCache.Website
                    .As<ILongRunningService>()
                    .EnableInterfaceInterceptors();
 
+            builder.RegisterType<LongRunningService>()
+                   .AsSelf();
+
             builder.RegisterType<CacheInterceptor>()
                    .AsSelf();
+
+            builder.RegisterType<RenewCacheAdapter>()
+                   .AsSelf();
+
 
             builder.Register(i =>
             {
@@ -39,6 +48,8 @@ namespace BackgroundUpdateCache.Website
             var container = builder.Build();
 
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            JobActivator.Current = new AutofacJobActivator(container);
         }
     }
 }
