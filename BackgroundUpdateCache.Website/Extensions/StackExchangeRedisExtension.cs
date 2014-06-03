@@ -18,11 +18,11 @@ namespace BackgroundUpdateCache.Website.Extensions
         public static object Get(this IDatabase cache, string key)
         {
             return Deserialize<object>(cache.StringGet(key));
-        }
+        }       
 
-        public static void Set(this IDatabase cache, string key, object value)
+        public static void Set(this IDatabase cache, string key, object value, TimeSpan? expire)
         {
-            cache.StringSet(key, Serialize(value));
+            cache.StringSet(key, Serialize(value), expire);
         }
 
         static byte[] Serialize(object o)
@@ -54,6 +54,6 @@ namespace BackgroundUpdateCache.Website.Extensions
                 T result = (T)binaryFormatter.Deserialize(memoryStream);
                 return result;
             }
-        }
+        }       
     }
 }

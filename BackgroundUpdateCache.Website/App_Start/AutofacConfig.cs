@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
+using Autofac.Extras.DynamicProxy2;
+using BackgroundUpdateCache.Website.Interceptors;
 using BackgroundUpdateCache.Website.Services;
 using StackExchange.Redis;
 using System;
@@ -19,7 +21,11 @@ namespace BackgroundUpdateCache.Website
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
             builder.RegisterType<LongRunningService>()
-                   .As<ILongRunningService>();
+                   .As<ILongRunningService>()
+                   .EnableInterfaceInterceptors();
+
+            builder.RegisterType<CacheInterceptor>()
+                   .AsSelf();
 
             builder.Register(i =>
             {
