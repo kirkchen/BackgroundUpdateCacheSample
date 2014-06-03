@@ -1,14 +1,15 @@
-﻿@model BackgroundUpdateCache.Website.Models.DataCollection
+﻿@model BackgroundUpdateCache.Website.Models.CacheDto<IEnumerable<int>>
 
-@{
+@{    
     ViewBag.Title = "Index";
+    Layout = null;
 }
 
 <h2>資料清單</h2>
 <div class="row">
     <div class="col-md-12">
         <ul>
-            @foreach (var item in Model.Datas)
+            @foreach (var item in Model.Data)
             {
                 <li>@item</li>
             }

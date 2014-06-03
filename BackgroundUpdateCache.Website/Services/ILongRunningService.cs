@@ -5,6 +5,6 @@ namespace BackgroundUpdateCache.Website.Services
 {
     public interface ILongRunningService
     {
-        DataCollection GetData();
+        CacheDto<IEnumerable<int>> GetData(int min, int max);
     }
 }

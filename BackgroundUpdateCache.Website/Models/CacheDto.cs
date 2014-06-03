@@ -5,10 +5,14 @@ using System.Web;
 
 namespace BackgroundUpdateCache.Website.Models
 {
-    public class DataCollection
+    public class CacheDto<T>
     {
-        public IEnumerable<int> Datas { get; set; }
+        public T Data { get; set; }
 
         public DateTime UpdateTime { get; set; }
+    }
+
+    public class CacheDto: CacheDto<object>
+    {
     }
 }

@@ -9,7 +9,7 @@ namespace BackgroundUpdateCache.Website.Services
 {
     public class LongRunningService : ILongRunningService
     {
-        public DataCollection GetData()
+        public CacheDto<IEnumerable<int>> GetData(int min, int max)
         {
             Thread.Sleep(5000);
 
@@ -18,12 +18,12 @@ namespace BackgroundUpdateCache.Website.Services
 
             for (int i = 0; i < 10; i++)
             {
-                result.Add(r.Next(0, 100));
+                result.Add(r.Next(min, max));
             }
 
-            return new DataCollection
+            return new CacheDto<IEnumerable<int>>
             {
-                Datas = result,
+                Data = result,
                 UpdateTime = DateTime.Now
             };
         }
