@@ -5,6 +5,7 @@ using System.Web;
 
 namespace BackgroundUpdateCache.Website.Models
 {
+    [Serializable]
     public class CacheDto<T>
     {
         public T Data { get; set; }
@@ -12,6 +13,7 @@ namespace BackgroundUpdateCache.Website.Models
         public DateTime UpdateTime { get; set; }
     }
 
+    [Serializable]
     public class CacheDto: CacheDto<object>
     {
     }
